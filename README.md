@@ -13,6 +13,25 @@ A lightweight ESM-based CLI framework for bootstrapping and managing TypeScript 
 * [Usage](#usage)
 * [Commands](#commands)
 <!-- tocstop -->
+# Configuration
+
+dcore reads configuration from `.dcorerc.*` or `.dcorets.ts` in the project
+root. Besides enabling tools you can declare additional dependencies which will
+be merged into the generated `package.json`:
+
+```ts
+export default {
+  projectName: 'my-app',
+  tools: { eslint: true, prettier: true },
+  dependencies: {
+    devDependencies: {
+      eslint: '^8.56.0',
+      prettier: '^3.2.5',
+    },
+  },
+};
+```
+
 # Usage
 <!-- usage -->
 ```sh-session

@@ -1,30 +1,45 @@
-import { pathToFileURL } from 'url';
-import { existsSync } from 'fs';
-import { resolve } from 'path';
+import { existsSync } from 'node:fs';
+import { resolve } from 'node:path';
+import { pathToFileURL } from 'node:url';
 import { z } from 'zod';
 
 const toolSetting = z.union([z.boolean(), z.record(z.string(), z.any())]);
 
 export const dcoreConfigSchema = z.object({
-  projectType: z.enum(['cdk-app', 'cdk-lib', 'ts-lib']),
-  projectName: z.string(),
-  projectDesription: z.string().optional(),
-  projectVersion: z.string().optional(),
+  ci: z.enum(['github', 'gitlab']).optional(),
+  dependencies: z
+    .object({
+      dependencies: z.record(z.string(), z.string()).optional(),
+      devDependencies: z.record(z.string(), z.string()).optional(),
+      optionalDependencies: z.record(z.string(), z.string()).optional(),
+      peerDependencies: z.record(z.string(), z.string()).optional(),
+    })
+    .optional(),
   projectAuthor: z.string().optional(),
+  projectDesription: z.string().optional(),
   projectLicense: z.string().optional(),
+  projectName: z.string(),
+  projectType: z.enum(['cdk-app', 'cdk-lib', 'ts-lib']),
+  projectVersion: z.string().optional(),
+  release: z.enum(['changesets', 'semantic-release']).optional(),
   tools: z.object({
     eslint: toolSetting.optional(),
-    prettier: toolSetting.optional(),
     jest: toolSetting.optional(),
+    prettier: toolSetting.optional(),
     typedoc: toolSetting.optional(),
   }),
-  ci: z.enum(['github', 'gitlab']).optional(),
-  release: z.enum(['changesets', 'semantic-release']).optional(),
 });
 
 export type DcoreConfig = z.infer<typeof dcoreConfigSchema>;
 
-const CONFIG_FILES = ['.dcorerc.ts', '.dcorerc.js', '.dcorerc.json'];
+const CONFIG_FILES = [
+  '.dcorerc.ts',
+  '.dcorerc.js',
+  '.dcorerc.cjs',
+  '.dcorerc.json',
+  '.dcorets.ts',
+  '.dcorets.cjs',
+];
 
 export async function loadDcoreConfig(
   cwd = process.cwd()
@@ -34,12 +49,14 @@ export async function loadDcoreConfig(
     if (!existsSync(path)) continue;
 
     const fileUrl = pathToFileURL(path).href;
-    let rawConfig: any;
+    let rawConfig: unknown;
 
     try {
-      rawConfig = (await import(fileUrl)).default ?? (await import(fileUrl));
-    } catch (err) {
-      throw new Error(`Failed to load ${filename}: ${err}`);
+      // eslint-disable-next-line no-await-in-loop
+      const imported = await import(fileUrl);
+      rawConfig = imported.default ?? imported;
+    } catch (error) {
+      throw new Error(`Failed to load ${filename}: ${error}`);
     }
 
     const parseResult = dcoreConfigSchema.safeParse(rawConfig);
@@ -56,5 +73,5 @@ export async function loadDcoreConfig(
     return parseResult.data;
   }
 
-  throw new Error(`No .dcorerc.ts/.js/.json found in ${cwd}`);
+  throw new Error(`No dcore config found in ${cwd}`);
 }

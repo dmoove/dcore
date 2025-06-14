@@ -1,36 +1,27 @@
-import { ToolGenerator } from './tool-generator.js';
+import { PackageJsonGenerator } from './package-json-generator.js';
+import { GeneratorConfig, ToolGenerator } from './tool-generator.js';
 
 export class EslintGenerator extends ToolGenerator {
   name = 'eslint';
 
-  shouldRun(config: any): boolean {
-    return !!config.tools?.eslint;
+  constructor(
+    projectRoot: string,
+    private readonly pkg?: PackageJsonGenerator
+  ) {
+    super(projectRoot);
   }
 
-  protected override getDefaultConfig(): Record<string, any> {
-    return {
-      root: true,
-      env: {
-        node: true,
-        es2020: true,
-      },
-      extends: ['eslint:recommended'],
-      parserOptions: {
-        ecmaVersion: 'latest',
-        sourceType: 'module',
-      },
-      rules: {},
-    };
-  }
-
-  async generate(config: any): Promise<void> {
-    const raw = config.tools?.eslint;
+  async generate(config: GeneratorConfig): Promise<void> {
+    const raw = (config.tools as Record<string, unknown> | undefined)?.eslint;
     const isObj = typeof raw === 'object' && raw !== null;
+    const typed = isObj ? (raw as Record<string, unknown>) : {};
 
     const mode: 'flat' | 'legacy' =
-      isObj && raw.mode === 'flat' ? 'flat' : 'legacy';
-    const userConfig = isObj ? { ...raw } : {};
-    delete userConfig.mode;
+      isObj && typeof typed.mode === 'string' && typed.mode === 'flat'
+        ? 'flat'
+        : 'legacy';
+    const userConfig = isObj ? { ...typed } : {};
+    delete (userConfig as Record<string, unknown>).mode;
 
     if (mode === 'flat') {
       const flatConfig = [
@@ -58,5 +49,27 @@ export default ${JSON.stringify(merged, null, 2)};`;
 
       await this.writeTextFile('.eslintrc.cjs', content);
     }
+
+    this.pkg?.addDevDependency('eslint', '^8.56.0');
+  }
+
+  protected override getDefaultConfig(): Record<string, unknown> {
+    return {
+      env: {
+        es2020: true,
+        node: true,
+      },
+      extends: ['eslint:recommended'],
+      parserOptions: {
+        ecmaVersion: 'latest',
+        sourceType: 'module',
+      },
+      root: true,
+      rules: {},
+    };
+  }
+
+  shouldRun(config: GeneratorConfig): boolean {
+    return Boolean(config.tools?.eslint);
   }
 }

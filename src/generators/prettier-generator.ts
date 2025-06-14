@@ -1,28 +1,39 @@
-import { ToolGenerator } from './tool-generator.js';
+import { PackageJsonGenerator } from './package-json-generator.js';
+import { GeneratorConfig, ToolGenerator } from './tool-generator.js';
 
 export class PrettierGenerator extends ToolGenerator {
   name = 'prettier';
 
-  shouldRun(config: any): boolean {
-    return !!config.tools?.prettier;
+  constructor(
+    projectRoot: string,
+    private readonly pkg?: PackageJsonGenerator
+  ) {
+    super(projectRoot);
   }
 
-  protected override getDefaultConfig() {
+  async generate(config: GeneratorConfig): Promise<void> {
+    const prettierCfg = this.getMergedConfig(
+      (config.tools as Record<string, unknown> | undefined)?.prettier ?? {}
+    );
+    await this.writeJsonFile('.prettierrc', prettierCfg);
+    await this.writeTextFile('.prettierignore', 'node_modules\ndist\nbuild\n');
+    this.pkg?.addDevDependency('prettier', '^3.2.5');
+  }
+
+  protected override getDefaultConfig(): Record<string, unknown> {
     return {
+      arrowParens: 'always',
+      bracketSpacing: true,
+      endOfLine: 'lf',
+      printWidth: 80,
       semi: true,
       singleQuote: true,
-      trailingComma: 'es5',
       tabWidth: 2,
-      printWidth: 80,
-      bracketSpacing: true,
-      arrowParens: 'always',
-      endOfLine: 'lf',
+      trailingComma: 'es5',
     };
   }
 
-  async generate(config: any): Promise<void> {
-    const prettierCfg = this.getMergedConfig(config.tools?.prettier);
-    await this.writeJsonFile('.prettierrc', prettierCfg);
-    await this.writeTextFile('.prettierignore', 'node_modules\ndist\nbuild\n');
+  shouldRun(config: GeneratorConfig): boolean {
+    return Boolean(config.tools?.prettier);
   }
 }
