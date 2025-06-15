@@ -1,4 +1,5 @@
 import { z } from 'zod';
+
 import { PackageJsonGenerator } from '../package-json/package-json-generator.js';
 import {
   DEFAULT_IGNORE_ENTRIES,
@@ -17,37 +18,68 @@ export class TsConfigGenerator extends ToolGenerator {
   }
 
   static override get configSchema() {
-    return z.boolean().optional();
+    return z
+      .union([
+        z.boolean(),
+        z
+          .object({
+            compilerOptions: z.record(z.string(), z.any()).optional(),
+            exclude: z.array(z.string()).optional(),
+            include: z.array(z.string()).optional(),
+          })
+          .passthrough(),
+      ])
+      .optional();
   }
 
-  shouldRun(): boolean {
-    return true;
+  async generate(config: Partial<GeneratorConfig> = {}): Promise<void> {
+    const rawCfg = this.getToolConfig(config);
+    const userCfg = ToolGenerator.isRecord(rawCfg) ? rawCfg : {};
+    const merged = this.mergeConfig(userCfg);
+    await this.writeJsonFile('tsconfig.json', merged);
+    this.pkg?.addDevDependency('typescript', '^5.3.3');
   }
 
   protected override getDefaultConfig() {
     return {
       $schema: 'https://json.schemastore.org/tsconfig',
       compilerOptions: {
-        target: 'ES2020',
-        module: 'ESNext',
-        moduleResolution: 'bundler',
-        lib: ['ES2020'],
+        allowImportingTsExtensions: false,
         esModuleInterop: true,
         forceConsistentCasingInFileNames: true,
-        strict: true,
-        skipLibCheck: true,
-        resolveJsonModule: true,
-        allowImportingTsExtensions: false,
+        lib: ['ES2020'],
+        module: 'ESNext',
+        moduleResolution: 'bundler',
         noEmit: true,
+        resolveJsonModule: true,
+        skipLibCheck: true,
+        strict: true,
+        target: 'ES2020',
         types: ['node'],
       },
-      include: ['src/**/*.ts'],
       exclude: DEFAULT_IGNORE_ENTRIES,
+      include: ['src/**/*.ts'],
     };
   }
 
-  async generate(_: Partial<GeneratorConfig> = {}): Promise<void> {
-    await this.writeJsonFile('tsconfig.json', this.getDefaultConfig());
-    this.pkg?.addDevDependency('typescript', '^5.3.3');
+  shouldRun(): boolean {
+    return true;
+  }
+
+  private mergeConfig(userCfg: Record<string, unknown>): Record<string, unknown> {
+    const base = this.getDefaultConfig();
+    const userOptions =
+      (userCfg.compilerOptions as Record<string, unknown> | undefined) ?? {};
+
+    const compilerOptions = {
+      ...(base.compilerOptions as Record<string, unknown>),
+      ...userOptions,
+    };
+
+    return {
+      ...base,
+      ...userCfg,
+      compilerOptions,
+    };
   }
 }

@@ -1,9 +1,10 @@
 import { z } from 'zod';
+
 import { PackageJsonGenerator } from '../package-json/package-json-generator.js';
 import {
+  DEFAULT_IGNORE_ENTRIES,
   GeneratorConfig,
   ToolGenerator,
-  DEFAULT_IGNORE_ENTRIES,
 } from '../tool-generator.js';
 
 export class EslintGenerator extends ToolGenerator {
@@ -24,26 +25,6 @@ export class EslintGenerator extends ToolGenerator {
         rules: z.record(z.string(), z.any()).optional(),
       }),
     ]);
-  }
-
-  override shouldRun(config: GeneratorConfig): boolean {
-    return Boolean(this.getToolConfig(config));
-  }
-
-  protected override getDefaultConfig(): Record<string, unknown> {
-    return {
-      root: true,
-      env: {
-        node: true,
-        es2020: true,
-      },
-      extends: ['eslint:recommended'],
-      parserOptions: {
-        ecmaVersion: 'latest',
-        sourceType: 'module',
-      },
-      rules: {},
-    };
   }
 
   async generate(config: GeneratorConfig): Promise<void> {
@@ -90,5 +71,25 @@ export default ${JSON.stringify(merged, null, 2)};`;
     await this.appendToIgnoreFile('.eslintignore', ...DEFAULT_IGNORE_ENTRIES);
 
     this.pkg?.addDevDependency('eslint', '^8.56.0');
+  }
+
+  protected override getDefaultConfig(): Record<string, unknown> {
+    return {
+      env: {
+        es2020: true,
+        node: true,
+      },
+      extends: ['eslint:recommended'],
+      parserOptions: {
+        ecmaVersion: 'latest',
+        sourceType: 'module',
+      },
+      root: true,
+      rules: {},
+    };
+  }
+
+  override shouldRun(config: GeneratorConfig): boolean {
+    return Boolean(this.getToolConfig(config));
   }
 }

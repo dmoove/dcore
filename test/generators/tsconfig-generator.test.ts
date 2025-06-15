@@ -3,8 +3,8 @@ import { promises as fs } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 
-import { PackageJsonGenerator } from '../../src/generators/package-json-generator.js';
-import { TsConfigGenerator } from '../../src/generators/tsconfig-generator.js';
+import { PackageJsonGenerator } from '../../src/generators/package-json/package-json-generator.js';
+import { TsConfigGenerator } from '../../src/generators/tsconfig/tsconfig-generator.js';
 
 describe('TsConfigGenerator', () => {
   it('creates tsconfig and registers dependency', async () => {

@@ -3,8 +3,7 @@ import { getBaseFields, getExportFields, getScripts } from './get-fields.js';
 
 export class PackageJsonGenerator extends ToolGenerator {
   name = 'package.json';
-
-  private dependencies = new Map<string, string>();
+private dependencies = new Map<string, string>();
   private devDependencies = new Map<string, string>();
   private optionalDependencies = new Map<string, string>();
   private peerDependencies = new Map<string, string>();
@@ -23,29 +22,6 @@ export class PackageJsonGenerator extends ToolGenerator {
 
   addPeerDependency(pkg: string, version: string): void {
     this.peerDependencies.set(pkg, version);
-  }
-
-  shouldRun(): boolean {
-    return true;
-  }
-
-  protected getDefaultDevDeps(): Record<string, string> {
-    return {
-      eslint: '^8.56.0',
-      prettier: '^3.2.5',
-      typescript: '^5.3.3',
-    };
-  }
-
-  private mergeDeps(
-    base: Record<string, string> = {},
-    extras: Map<string, string>
-  ): Record<string, string> {
-    const result = { ...base };
-    for (const [name, version] of extras) {
-      result[name] = version;
-    }
-    return result;
   }
 
   async generate(config: GeneratorConfig): Promise<void> {
@@ -68,7 +44,7 @@ export class PackageJsonGenerator extends ToolGenerator {
       devDependencies: this.mergeDeps(
         {
           ...this.getDefaultDevDeps(),
-          ...(extraDeps.devDependencies ?? {}),
+          ...extraDeps.devDependencies,
         },
         this.devDependencies
       ),
@@ -89,5 +65,27 @@ export class PackageJsonGenerator extends ToolGenerator {
     }
 
     await this.writeJsonFile('package.json', pkg);
+  }
+
+  protected getDefaultDevDeps(): Record<string, string> {
+    return {
+      typescript: '^5.3.3',
+    };
+  }
+
+  shouldRun(): boolean {
+    return true;
+  }
+
+  private mergeDeps(
+    base: Record<string, string> = {},
+    extras: Map<string, string>
+  ): Record<string, string> {
+    const result = { ...base };
+    for (const [name, version] of extras) {
+      result[name] = version;
+    }
+
+    return result;
   }
 }

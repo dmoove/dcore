@@ -3,8 +3,8 @@ import { promises as fs } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 
-import { EslintGenerator } from '../../src/generators/eslint-generator.js';
-import { PackageJsonGenerator } from '../../src/generators/package-json-generator.js';
+import { EslintGenerator } from '../../src/generators/eslint/eslint-generator.js';
+import { PackageJsonGenerator } from '../../src/generators/package-json/package-json-generator.js';
 
 describe('EslintGenerator', () => {
   it('generates config and registers dependency', async () => {
@@ -12,7 +12,7 @@ describe('EslintGenerator', () => {
     const pkg = new PackageJsonGenerator(dir);
     const gen = new EslintGenerator(dir, pkg);
 
-    await gen.generate({ tools: { eslint: true } });
+    await gen.generate({ projectName: 'demo', projectType: 'ts-lib', tools: { eslint: true } });
     await pkg.generate({ projectName: 'demo', projectType: 'ts-lib', tools: {} });
 
     const rcPath = join(dir, '.eslintrc.cjs');
