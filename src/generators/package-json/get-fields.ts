@@ -1,16 +1,18 @@
-export function getBaseFields(config: any): Record<string, unknown> {
+import type { GeneratorConfig } from '../tool-generator.js';
+
+export function getBaseFields(config: Partial<GeneratorConfig>): Record<string, unknown> {
   return {
-    name: config.projectName || 'my-project',
-    version: config.projectVersion || '0.1.0',
-    description: config.projectDesription || '',
     author: config.projectAuthor || '',
+    description: config.projectDesription || '',
     license: config.projectLicense || 'MIT',
+    name: config.projectName || 'my-project',
     private: true,
     type: 'module',
+    version: config.projectVersion || '0.1.0',
   };
 }
 
-export function getScripts(config: any): Record<string, string> {
+export function getScripts(config: Partial<GeneratorConfig>): Record<string, string> {
   const scripts: Record<string, string> = {
     build: 'tsc',
     format: 'prettier --check .',
@@ -32,8 +34,8 @@ export function getScripts(config: any): Record<string, string> {
   return scripts;
 }
 
-export function getExportFields(config: any): Record<string, unknown> {
-  const { main, types, exports: exp, files } = config.exports || {};
+export function getExportFields(config: Partial<GeneratorConfig>): Record<string, unknown> {
+  const { exports: exp, files, main, types } = config.exports || {};
 
   const anyDefined = main || types || exp || files;
   const allDefined = main && types && exp && files;
@@ -46,18 +48,16 @@ export function getExportFields(config: any): Record<string, unknown> {
 
   if (allDefined) {
     return {
-      main,
-      types,
       exports: exp,
       files,
+      main,
+      types,
     };
   }
 
   // Defaults, if nothing provided
   if (config.projectType === 'ts-lib' || config.projectType === 'cdk-lib') {
     return {
-      main: './dist/index.js',
-      types: './dist/index.d.ts',
       exports: {
         '.': {
           import: './dist/index.js',
@@ -65,6 +65,8 @@ export function getExportFields(config: any): Record<string, unknown> {
         },
       },
       files: ['dist'],
+      main: './dist/index.js',
+      types: './dist/index.d.ts',
     };
   }
 

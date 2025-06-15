@@ -3,7 +3,8 @@ import { promises as fs } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 
-import { PackageJsonGenerator } from '../../src/generators/package-json-generator.js';
+import { PackageJsonGenerator } from '../../src/generators/package-json/package-json-generator.js';
+import { GeneratorConfig } from '../../src/generators/tool-generator.js';
 
 describe('PackageJsonGenerator', () => {
   it('writes package.json with merged dependencies', async () => {
@@ -14,7 +15,7 @@ describe('PackageJsonGenerator', () => {
     pkg.addPeerDependency('baz', '^3.0.0');
     pkg.addOptionalDependency('qux', '^4.0.0');
 
-    const config = {
+    const config: GeneratorConfig = {
       dependencies: {
         dependencies: { express: '^5.0.0' },
         devDependencies: { eslint: '^8.0.0' },

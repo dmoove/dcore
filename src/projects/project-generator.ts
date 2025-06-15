@@ -1,8 +1,8 @@
-import { EslintGenerator } from '../generators/eslint-generator';
-import { PackageJsonGenerator } from '../generators/package-json-generator';
-import { PrettierGenerator } from '../generators/prettier-generator';
-import { GeneratorConfig, ToolGenerator } from '../generators/tool-generator';
-import { TsConfigGenerator } from '../generators/tsconfig-generator';
+import { EslintGenerator } from '../generators/eslint/eslint-generator.js';
+import { PackageJsonGenerator } from '../generators/package-json/package-json-generator.js';
+import { PrettierGenerator } from '../generators/prettier/prettier-generator.js';
+import { GeneratorConfig, ToolGenerator } from '../generators/tool-generator.js';
+import { TsConfigGenerator } from '../generators/tsconfig/tsconfig-generator.js';
 
 export class ProjectGenerator {
   private readonly generators: ToolGenerator[];

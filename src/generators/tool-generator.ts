@@ -3,6 +3,8 @@ import { readFile, writeFile } from 'node:fs/promises';
 import { resolve } from 'node:path';
 import { z } from 'zod';
 
+import type { DcoreConfig } from '../config/load-config.js';
+
 export const DEFAULT_IGNORE_ENTRIES = [
   'node_modules',
   'dist',
@@ -13,25 +15,16 @@ export const DEFAULT_IGNORE_ENTRIES = [
 /**
  * Die Konfigurationsstruktur für jeden Generator
  */
-export interface GeneratorConfig {
-  projectName: string;
-  projectType: 'cdk-app' | 'cdk-lib' | 'ts-lib';
-  projectVersion?: string;
-  projectAuthor?: string;
-  projectDesription?: string;
-  projectLicense?: string;
-  projectRepository?: string;
+export interface GeneratorConfig extends DcoreConfig {
+  exports?: {
+    exports?: Record<string, unknown>;
+    files?: string[];
+    main?: string;
+    types?: string;
+  };
   projectHomepage?: string;
   projectKeywords?: string[];
-  release?: 'changesets' | 'semantic-release';
-  ci?: 'github' | 'gitlab';
-  tools?: Record<string, boolean | Record<string, unknown>>;
-  dependencies?: {
-    dependencies?: Record<string, string>;
-    devDependencies?: Record<string, string>;
-    optionalDependencies?: Record<string, string>;
-    peerDependencies?: Record<string, string>;
-  };
+  projectRepository?: string;
 }
 
 /**
@@ -42,18 +35,46 @@ export abstract class ToolGenerator {
 
   constructor(protected readonly projectRoot: string) {}
 
+  protected static isRecord(val: unknown): val is Record<string, unknown> {
+    return typeof val === 'object' && val !== null && !Array.isArray(val);
+  }
+
   /**
    * Optional: zod-Schema für Tool-spezifische Konfiguration
    * (kann von Subklassen überschrieben werden)
    */
-  static get configSchema(): z.ZodTypeAny | undefined {
+  static get configSchema(): undefined | z.ZodTypeAny {
     return undefined;
   }
 
   /**
-   * Soll der Generator ausgeführt werden?
+   *
+   * @param filename Name der Datei, die aktualisiert werden soll
+   * @description Fügt Einträge zu einer .gitignore- oder .npmignore-Datei hinzu
+   * @param entries Die Pfade oder Pattern, die ignoriert werden sollen
    */
-  abstract shouldRun(config: GeneratorConfig): boolean;
+  protected async appendToIgnoreFile(
+    filename: string,
+    ...entries: string[]
+  ): Promise<void> {
+    const path = resolve(this.projectRoot, filename);
+
+    const existing = existsSync(path) ? await readFile(path, 'utf8') : '';
+
+    const lines = new Set(
+      existing
+        .split('\n')
+        .map((line) => line.trim())
+        .filter(Boolean)
+    );
+
+    for (const entry of entries) {
+      lines.add(entry);
+    }
+
+    const newContent = [...lines].sort().join('\n') + '\n';
+    await writeFile(path, newContent, 'utf8');
+  }
 
   /**
    * Führt die Generierung aus
@@ -79,6 +100,20 @@ export abstract class ToolGenerator {
   }
 
   /**
+   * Retrieves the configuration block for this tool from the global config
+   */
+  protected getToolConfig(
+    config: Partial<GeneratorConfig>
+  ): boolean | Record<string, unknown> {
+    return config.tools?.[this.name] ?? false;
+  }
+
+  /**
+   * Soll der Generator ausgeführt werden?
+   */
+  abstract shouldRun(config: GeneratorConfig): boolean;
+
+  /**
    * Hilfsmethode zum Schreiben von JSON-Dateien
    */
   protected async writeJsonFile(
@@ -87,10 +122,6 @@ export abstract class ToolGenerator {
   ): Promise<void> {
     const path = resolve(this.projectRoot, filename);
     await writeFile(path, JSON.stringify(data, null, 2) + '\n', 'utf8');
-  }
-
-  protected static isRecord(val: unknown): val is Record<string, unknown> {
-    return typeof val === 'object' && val !== null && !Array.isArray(val);
   }
 
   /**
@@ -102,34 +133,5 @@ export abstract class ToolGenerator {
   ): Promise<void> {
     const path = resolve(this.projectRoot, filename);
     await writeFile(path, content, 'utf8');
-  }
-
-  /**
-   *
-   * @param filename Name der Datei, die aktualisiert werden soll
-   * @description Fügt Einträge zu einer .gitignore- oder .npmignore-Datei hinzu
-   * @param entries
-   */
-  protected async appendToIgnoreFile(
-    filename: string,
-    ...entries: string[]
-  ): Promise<void> {
-    const path = resolve(this.projectRoot, filename);
-
-    const existing = existsSync(path) ? await readFile(path, 'utf8') : '';
-
-    const lines = new Set(
-      existing
-        .split('\n')
-        .map((line) => line.trim())
-        .filter(Boolean)
-    );
-
-    for (const entry of entries) {
-      lines.add(entry);
-    }
-
-    const newContent = [...lines].sort().join('\n') + '\n';
-    await writeFile(path, newContent, 'utf8');
   }
 }

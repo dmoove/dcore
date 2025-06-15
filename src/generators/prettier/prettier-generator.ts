@@ -1,4 +1,5 @@
 import { z } from 'zod';
+
 import { PackageJsonGenerator } from '../package-json/package-json-generator.js';
 import {
   DEFAULT_IGNORE_ENTRIES,
@@ -32,8 +33,16 @@ export class PrettierGenerator extends ToolGenerator {
     ]);
   }
 
-  shouldRun(config: GeneratorConfig): boolean {
-    return Boolean(config.tools?.prettier);
+  async generate(config: GeneratorConfig): Promise<void> {
+    const raw = config.tools?.prettier;
+    const prettierCfg = ToolGenerator.isRecord(raw)
+      ? this.getMergedConfig(raw)
+      : this.getMergedConfig({});
+
+    await this.writeJsonFile('.prettierrc', prettierCfg);
+    await this.appendToIgnoreFile('.prettierignore', ...DEFAULT_IGNORE_ENTRIES);
+
+    this.pkg?.addDevDependency('prettier', '^3.2.5');
   }
 
   protected override getDefaultConfig(): Record<string, unknown> {
@@ -49,15 +58,7 @@ export class PrettierGenerator extends ToolGenerator {
     };
   }
 
-  async generate(config: GeneratorConfig): Promise<void> {
-    const raw = config.tools?.prettier;
-    const prettierCfg = ToolGenerator.isRecord(raw)
-      ? this.getMergedConfig(raw)
-      : this.getMergedConfig({});
-
-    await this.writeJsonFile('.prettierrc', prettierCfg);
-    await this.appendToIgnoreFile('.prettierignore', ...DEFAULT_IGNORE_ENTRIES);
-
-    this.pkg?.addDevDependency('prettier', '^3.2.5');
+  shouldRun(config: GeneratorConfig): boolean {
+    return Boolean(config.tools?.prettier);
   }
 }

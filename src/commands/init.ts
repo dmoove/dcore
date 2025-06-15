@@ -1,4 +1,5 @@
 import { Command } from '@oclif/core';
+
 import { loadDcoreConfig } from '../config/load-config.js';
 import { ProjectGenerator } from '../projects/project-generator.js';
 

@@ -3,7 +3,7 @@ import { resolve } from 'node:path';
 import { pathToFileURL } from 'node:url';
 import { z } from 'zod';
 
-const toolSetting = z.union([z.boolean(), z.record(z.string(), z.any())]);
+import { buildToolSchema } from '../generators/tool-registry.js';
 
 export const dcoreConfigSchema = z.object({
   ci: z.enum(['github', 'gitlab']).optional(),
@@ -22,12 +22,7 @@ export const dcoreConfigSchema = z.object({
   projectType: z.enum(['cdk-app', 'cdk-lib', 'ts-lib']),
   projectVersion: z.string().optional(),
   release: z.enum(['changesets', 'semantic-release']).optional(),
-  tools: z.object({
-    eslint: toolSetting.optional(),
-    jest: toolSetting.optional(),
-    prettier: toolSetting.optional(),
-    typedoc: toolSetting.optional(),
-  }),
+  tools: buildToolSchema(),
 });
 
 export type DcoreConfig = z.infer<typeof dcoreConfigSchema>;
