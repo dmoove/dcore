@@ -1,29 +1,40 @@
 import { GeneratorConfig, ToolGenerator } from '../tool-generator.js';
 import { getBaseFields, getExportFields, getScripts } from './get-fields.js';
 
+/**
+ * Writes the project's `package.json` file and collects dependencies from
+ * other generators.
+ */
 export class PackageJsonGenerator extends ToolGenerator {
   name = 'package.json';
-private dependencies = new Map<string, string>();
+  private dependencies = new Map<string, string>();
   private devDependencies = new Map<string, string>();
   private optionalDependencies = new Map<string, string>();
   private peerDependencies = new Map<string, string>();
 
+  /** Register a runtime dependency for the generated `package.json`. */
   addDependency(pkg: string, version: string): void {
     this.dependencies.set(pkg, version);
   }
 
+  /** Register a dev dependency for the generated `package.json`. */
   addDevDependency(pkg: string, version: string): void {
     this.devDependencies.set(pkg, version);
   }
 
+  /** Register an optional dependency for the generated `package.json`. */
   addOptionalDependency(pkg: string, version: string): void {
     this.optionalDependencies.set(pkg, version);
   }
 
+  /** Register a peer dependency for the generated `package.json`. */
   addPeerDependency(pkg: string, version: string): void {
     this.peerDependencies.set(pkg, version);
   }
 
+  /**
+   * Generate the `package.json` file based on collected information.
+   */
   async generate(config: GeneratorConfig): Promise<void> {
     const base = getBaseFields(config);
     const scripts = getScripts(config);
@@ -67,16 +78,21 @@ private dependencies = new Map<string, string>();
     await this.writeJsonFile('package.json', pkg);
   }
 
+  /** Default devDependencies that are always included. */
   protected getDefaultDevDeps(): Record<string, string> {
     return {
       typescript: '^5.3.3',
     };
   }
 
+  /** The package.json generator always runs. */
   shouldRun(): boolean {
     return true;
   }
 
+  /**
+   * Merge base dependencies with those collected by other generators.
+   */
   private mergeDeps(
     base: Record<string, string> = {},
     extras: Map<string, string>

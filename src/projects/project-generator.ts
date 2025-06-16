@@ -7,9 +7,18 @@ import { PrettierGenerator } from '../generators/prettier/prettier-generator.js'
 import { GeneratorConfig, ToolGenerator } from '../generators/tool-generator.js';
 import { TsConfigGenerator } from '../generators/tsconfig/tsconfig-generator.js';
 
+/**
+ * Orchestrates all configured tool generators for a project.
+ */
 export class ProjectGenerator {
   private readonly generators: ToolGenerator[];
 
+  /**
+   * Create a new project generator.
+   *
+   * @param config - The generator configuration
+   * @param projectRoot - Location of the project, defaults to the current working directory
+   */
   constructor(private config: GeneratorConfig, private projectRoot = process.cwd()) {
     const pkg = new PackageJsonGenerator(this.projectRoot);
     this.generators = [
@@ -27,6 +36,9 @@ export class ProjectGenerator {
     }
   }
 
+  /**
+   * Run all configured generators in sequence.
+   */
   async generateAll(): Promise<void> {
     for (const generator of this.generators) {
       if (generator.shouldRun(this.config)) {

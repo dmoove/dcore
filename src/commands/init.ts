@@ -6,6 +6,10 @@ import { basename, resolve } from 'node:path';
 import { loadDcoreConfig } from '../config/load-config.js';
 import { ProjectGenerator } from '../projects/project-generator.js';
 
+/**
+ * Initialize a new project by creating a configuration file and generating
+ * default project files.
+ */
 export default class Init extends Command {
   static description = 'Create a new .dcorerc.ts and generate project files';
   static flags = {
@@ -22,6 +26,9 @@ export default class Init extends Command {
     }),
   };
 
+  /**
+   * Execute the command.
+   */
   async run(): Promise<void> {
     const { flags } = await this.parse(Init);
     const file = resolve(process.cwd(), '.dcorerc.ts');
