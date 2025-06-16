@@ -4,9 +4,15 @@ import { simpleGit } from 'simple-git';
 
 import { DEFAULT_IGNORE_ENTRIES, GeneratorConfig, ToolGenerator } from '../tool-generator.js';
 
+/**
+ * Handles creation of a `.gitignore` and repository initialization.
+ */
 export class GitGenerator extends ToolGenerator {
   name = 'git';
 
+  /**
+   * Generate git related files and optionally initialize a repository.
+   */
   async generate(config: GeneratorConfig): Promise<void> {
     const entries = [
       ...DEFAULT_IGNORE_ENTRIES,
@@ -28,6 +34,9 @@ export class GitGenerator extends ToolGenerator {
     }
   }
 
+  /**
+   * The git generator always runs.
+   */
   shouldRun(): boolean {
     return true;
   }

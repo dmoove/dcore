@@ -5,9 +5,15 @@ import { pascalCase } from '../../utils/string.js';
 import { GeneratorConfig } from '../tool-generator.js';
 import { CdkCommon } from './cdk-common.js';
 
+/**
+ * Generates scaffolding for an AWS CDK construct library.
+ */
 export class CdkLibGenerator extends CdkCommon {
   name = 'cdk-lib';
 
+  /**
+   * Create the construct library structure and update dependencies.
+   */
   async generate(config: GeneratorConfig): Promise<void> {
     const name = config.projectName || 'cdk-lib';
     const pascal = pascalCase(name);
@@ -29,6 +35,7 @@ export class ${pascal} extends Construct {
     this.addPeerDependencies();
   }
 
+  /** Only runs when the project type is `cdk-lib`. */
   override shouldRun(config: GeneratorConfig): boolean {
     return config.projectType === 'cdk-lib';
   }

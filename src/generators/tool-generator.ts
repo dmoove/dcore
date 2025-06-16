@@ -13,7 +13,7 @@ export const DEFAULT_IGNORE_ENTRIES = [
 ];
 
 /**
- * Die Konfigurationsstruktur für jeden Generator
+ * Configuration passed to each generator.
  */
 export interface GeneratorConfig extends DcoreConfig {
   exports?: {
@@ -30,7 +30,7 @@ export interface GeneratorConfig extends DcoreConfig {
 }
 
 /**
- * Abstrakte Basisklasse für Generatoren
+ * Base class for all generators.
  */
 export abstract class ToolGenerator {
   abstract name: string;
@@ -42,18 +42,18 @@ export abstract class ToolGenerator {
   }
 
   /**
-   * Optional: zod-Schema für Tool-spezifische Konfiguration
-   * (kann von Subklassen überschrieben werden)
+   * Optional Zod schema for tool specific configuration. Subclasses may
+   * override this method.
    */
   static get configSchema(): undefined | z.ZodTypeAny {
     return undefined;
   }
 
   /**
+   * Append entries to ignore files like `.gitignore` or `.npmignore`.
    *
-   * @param filename Name der Datei, die aktualisiert werden soll
-   * @description Fügt Einträge zu einer .gitignore- oder .npmignore-Datei hinzu
-   * @param entries Die Pfade oder Pattern, die ignoriert werden sollen
+   * @param filename - File that should be updated
+   * @param entries - Paths or patterns that should be ignored
    */
   protected async appendToIgnoreFile(
     filename: string,
@@ -79,19 +79,19 @@ export abstract class ToolGenerator {
   }
 
   /**
-   * Führt die Generierung aus
+   * Execute the generator.
    */
   abstract generate(config: GeneratorConfig): Promise<void>;
 
   /**
-   * Optional: Default-Konfiguration für Tool
+   * Optional default configuration for the tool.
    */
   protected getDefaultConfig(): Record<string, unknown> {
     return {};
   }
 
   /**
-   * Nutzt die Default-Konfiguration, gemerged mit der User-Konfiguration
+   * Merge the default configuration with the user provided configuration.
    */
   protected getMergedConfig(
     userConfig: boolean | Record<string, unknown>
@@ -111,12 +111,12 @@ export abstract class ToolGenerator {
   }
 
   /**
-   * Soll der Generator ausgeführt werden?
+   * Determine whether the generator should run.
    */
   abstract shouldRun(config: GeneratorConfig): boolean;
 
   /**
-   * Hilfsmethode zum Schreiben von JSON-Dateien
+   * Helper to write JSON files with a trailing newline.
    */
   protected async writeJsonFile(
     filename: string,
@@ -127,7 +127,7 @@ export abstract class ToolGenerator {
   }
 
   /**
-   * Hilfsmethode zum Schreiben von Text-Dateien
+   * Helper to write plain text files.
    */
   protected async writeTextFile(
     filename: string,

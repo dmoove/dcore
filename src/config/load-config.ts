@@ -5,6 +5,9 @@ import { z } from 'zod';
 
 import { buildToolSchema } from '../generators/tool-registry.js';
 
+/**
+ * Zod schema describing the structure of `.dcorerc` configuration files.
+ */
 export const dcoreConfigSchema = z.object({
   ci: z.enum(['github', 'gitlab']).optional(),
   dependencies: z
@@ -36,6 +39,12 @@ const CONFIG_FILES = [
   '.dcorets.cjs',
 ];
 
+/**
+ * Load the dcore configuration from the current working directory.
+ *
+ * @param cwd - Directory to search for configuration files
+ * @returns The parsed configuration
+ */
 export async function loadDcoreConfig(
   cwd = process.cwd()
 ): Promise<DcoreConfig> {

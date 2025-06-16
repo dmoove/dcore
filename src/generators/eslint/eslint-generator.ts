@@ -7,6 +7,10 @@ import {
   ToolGenerator,
 } from '../tool-generator.js';
 
+/**
+ * Generates ESLint configuration files in either flat or legacy mode and
+ * registers the dependency.
+ */
 export class EslintGenerator extends ToolGenerator {
   name = 'eslint';
 
@@ -17,6 +21,9 @@ export class EslintGenerator extends ToolGenerator {
     super(projectRoot);
   }
 
+  /**
+   * Optional user configuration schema for ESLint.
+   */
   static override get configSchema() {
     return z.union([
       z.boolean(),
@@ -27,6 +34,9 @@ export class EslintGenerator extends ToolGenerator {
     ]);
   }
 
+  /**
+   * Write ESLint configuration and update dependencies.
+   */
   async generate(config: GeneratorConfig): Promise<void> {
     const toolCfg = this.getToolConfig(config);
     const isObj = typeof toolCfg === 'object' && toolCfg !== null;
@@ -73,6 +83,9 @@ export default ${JSON.stringify(merged, null, 2)};`;
     this.pkg?.addDevDependency('eslint', '^8.56.0');
   }
 
+  /**
+   * Default ESLint configuration used for the legacy `.eslintrc` format.
+   */
   protected override getDefaultConfig(): Record<string, unknown> {
     return {
       env: {
@@ -89,6 +102,9 @@ export default ${JSON.stringify(merged, null, 2)};`;
     };
   }
 
+  /**
+   * Run only when ESLint is enabled in the config.
+   */
   override shouldRun(config: GeneratorConfig): boolean {
     return Boolean(this.getToolConfig(config));
   }

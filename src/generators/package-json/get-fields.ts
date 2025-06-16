@@ -1,5 +1,8 @@
 import type { GeneratorConfig } from '../tool-generator.js';
 
+/**
+ * Basic `package.json` fields derived from the global configuration.
+ */
 export function getBaseFields(config: Partial<GeneratorConfig>): Record<string, unknown> {
   return {
     author: config.projectAuthor || '',
@@ -12,6 +15,9 @@ export function getBaseFields(config: Partial<GeneratorConfig>): Record<string, 
   };
 }
 
+/**
+ * Build the scripts section for `package.json`.
+ */
 export function getScripts(config: Partial<GeneratorConfig>): Record<string, string> {
   const scripts: Record<string, string> = {
     build: 'tsc',
@@ -34,6 +40,9 @@ export function getScripts(config: Partial<GeneratorConfig>): Record<string, str
   return scripts;
 }
 
+/**
+ * Determine export related fields for `package.json`.
+ */
 export function getExportFields(config: Partial<GeneratorConfig>): Record<string, unknown> {
   const { exports: exp, files, main, types } = config.exports || {};
 
@@ -73,6 +82,9 @@ export function getExportFields(config: Partial<GeneratorConfig>): Record<string
   return {};
 }
 
+/**
+ * Convert a `Map` to a plain object.
+ */
 export function toObject(map: Map<string, string>): Record<string, string> {
   return Object.fromEntries(map.entries());
 }

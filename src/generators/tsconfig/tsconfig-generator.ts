@@ -7,6 +7,9 @@ import {
   ToolGenerator,
 } from '../tool-generator.js';
 
+/**
+ * Generates a `tsconfig.json` and registers the TypeScript dependency.
+ */
 export class TsConfigGenerator extends ToolGenerator {
   name = 'tsconfig';
 
@@ -17,6 +20,9 @@ export class TsConfigGenerator extends ToolGenerator {
     super(projectRoot);
   }
 
+  /**
+   * Optional schema for user supplied tsconfig options.
+   */
   static override get configSchema() {
     return z
       .union([
@@ -32,6 +38,9 @@ export class TsConfigGenerator extends ToolGenerator {
       .optional();
   }
 
+  /**
+   * Generate the tsconfig file and register dependencies.
+   */
   async generate(config: Partial<GeneratorConfig> = {}): Promise<void> {
     const rawCfg = this.getToolConfig(config);
     const userCfg = ToolGenerator.isRecord(rawCfg) ? rawCfg : {};
@@ -40,6 +49,9 @@ export class TsConfigGenerator extends ToolGenerator {
     this.pkg?.addDevDependency('typescript', '^5.3.3');
   }
 
+  /**
+   * Default TypeScript configuration used as a base.
+   */
   protected override getDefaultConfig() {
     return {
       $schema: 'https://json.schemastore.org/tsconfig',
@@ -62,10 +74,16 @@ export class TsConfigGenerator extends ToolGenerator {
     };
   }
 
+  /**
+   * The tsconfig generator always runs.
+   */
   shouldRun(): boolean {
     return true;
   }
 
+  /**
+   * Merge default options with user supplied values.
+   */
   private mergeConfig(userCfg: Record<string, unknown>): Record<string, unknown> {
     const base = this.getDefaultConfig();
     const userOptions =

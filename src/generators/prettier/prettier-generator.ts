@@ -7,6 +7,10 @@ import {
   ToolGenerator,
 } from '../tool-generator.js';
 
+/**
+ * Generates Prettier configuration files and registers the dependency in
+ * package.json.
+ */
 export class PrettierGenerator extends ToolGenerator {
   name = 'prettier';
 
@@ -17,6 +21,9 @@ export class PrettierGenerator extends ToolGenerator {
     super(projectRoot);
   }
 
+  /**
+   * Optional user configuration schema for Prettier.
+   */
   static override get configSchema() {
     return z.union([
       z.boolean(),
@@ -33,6 +40,9 @@ export class PrettierGenerator extends ToolGenerator {
     ]);
   }
 
+  /**
+   * Write Prettier configuration and update dependencies.
+   */
   async generate(config: GeneratorConfig): Promise<void> {
     const raw = config.tools?.prettier;
     const prettierCfg = ToolGenerator.isRecord(raw)
@@ -45,6 +55,9 @@ export class PrettierGenerator extends ToolGenerator {
     this.pkg?.addDevDependency('prettier', '^3.2.5');
   }
 
+  /**
+   * Default Prettier settings used when the user does not provide their own.
+   */
   protected override getDefaultConfig(): Record<string, unknown> {
     return {
       arrowParens: 'always',
@@ -58,6 +71,9 @@ export class PrettierGenerator extends ToolGenerator {
     };
   }
 
+  /**
+   * Run only when the Prettier tool is enabled in the config.
+   */
   shouldRun(config: GeneratorConfig): boolean {
     return Boolean(config.tools?.prettier);
   }

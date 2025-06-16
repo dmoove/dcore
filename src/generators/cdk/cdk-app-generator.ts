@@ -5,9 +5,15 @@ import { pascalCase } from '../../utils/string.js';
 import { GeneratorConfig } from '../tool-generator.js';
 import { CdkCommon } from './cdk-common.js';
 
+/**
+ * Generates scaffolding for an AWS CDK application.
+ */
 export class CdkAppGenerator extends CdkCommon {
   name = 'cdk-app';
 
+  /**
+   * Create the CDK app structure and update dependencies.
+   */
   async generate(config: GeneratorConfig): Promise<void> {
     const name = config.projectName || 'cdk-app';
     const pascal = pascalCase(name);
@@ -44,6 +50,7 @@ export class ${pascal}Stack extends cdk.Stack {
     this.pkg?.addDevDependency('ts-node', '^10.9.2');
   }
 
+  /** Only runs when the project type is `cdk-app`. */
   override shouldRun(config: GeneratorConfig): boolean {
     return config.projectType === 'cdk-app';
   }
