@@ -15,6 +15,7 @@ jobs:
           node-version: lts/*
       - uses: pnpm/action-setup@v2
         with:
+          version: 9
           run_install: false
       - name: Check if version already exists
         id: version-check

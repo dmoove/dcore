@@ -19,6 +19,7 @@ jobs:
           node-version: ${{ matrix.node_version }}
       - uses: pnpm/action-setup@v2
         with:
+          version: 9
           run_install: false
       - run: pnpm install
       - run: pnpm run build
