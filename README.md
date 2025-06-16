@@ -40,7 +40,7 @@ $ npm install -g dmpak
 $ dmpak COMMAND
 running command...
 $ dmpak (--version)
-dmpak/0.0.0 linux-x64 node-v20.19.2
+dmpak/0.0.0 linux-x64 node-v22.16.0
 $ dmpak --help [COMMAND]
 USAGE
   $ dmpak COMMAND
@@ -116,8 +116,7 @@ ARGUMENTS
   PLUGIN...  Plugin to install.
 
 FLAGS
-  -f, --force    Force npm to fetch remote resources even if a local copy exists
-                 on disk.
+  -f, --force    Force npm to fetch remote resources even if a local copy exists on disk.
   -h, --help     Show CLI help.
   -s, --silent   Silences npm output.
   -v, --verbose  Show verbose npm output.
@@ -191,8 +190,7 @@ ARGUMENTS
   PLUGIN...  Plugin to install.
 
 FLAGS
-  -f, --force    Force npm to fetch remote resources even if a local copy exists
-                 on disk.
+  -f, --force    Force npm to fetch remote resources even if a local copy exists on disk.
   -h, --help     Show CLI help.
   -s, --silent   Silences npm output.
   -v, --verbose  Show verbose npm output.
@@ -250,10 +248,8 @@ DESCRIPTION
 
   Installation of a linked plugin will override a user-installed or core plugin.
 
-  e.g. If you have a user-installed or core plugin that has a 'hello' command,
-  installing a linked plugin with a 'hello' command will override the
-  user-installed or core plugin implementation. This is useful for development
-  work.
+  e.g. If you have a user-installed or core plugin that has a 'hello' command, installing a linked plugin with a 'hello'
+  command will override the user-installed or core plugin implementation. This is useful for development work.
 
 
 EXAMPLES
@@ -297,8 +293,7 @@ USAGE
   $ dmpak plugins reset [--hard] [--reinstall]
 
 FLAGS
-  --hard       Delete node_modules and package manager related files in addition
-               to uninstalling plugins.
+  --hard       Delete node_modules and package manager related files in addition to uninstalling plugins.
   --reinstall  Reinstall all plugins after uninstalling.
 ```
 
