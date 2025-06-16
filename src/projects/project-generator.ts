@@ -1,3 +1,5 @@
+import { CdkAppGenerator } from '../generators/cdk/cdk-app-generator.js';
+import { CdkLibGenerator } from '../generators/cdk/cdk-lib-generator.js';
 import { EslintGenerator } from '../generators/eslint/eslint-generator.js';
 import { GitGenerator } from '../generators/git/git-generator.js';
 import { PackageJsonGenerator } from '../generators/package-json/package-json-generator.js';
@@ -17,6 +19,12 @@ export class ProjectGenerator {
       new PrettierGenerator(this.projectRoot, pkg),
       new GitGenerator(this.projectRoot),
     ];
+
+    if (config.projectType === 'cdk-app') {
+      this.generators.push(new CdkAppGenerator(this.projectRoot, pkg));
+    } else if (config.projectType === 'cdk-lib') {
+      this.generators.push(new CdkLibGenerator(this.projectRoot, pkg));
+    }
   }
 
   async generateAll(): Promise<void> {
