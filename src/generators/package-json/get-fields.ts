@@ -5,11 +5,14 @@ import type { GeneratorConfig } from '../tool-generator.js';
  */
 export function getBaseFields(config: Partial<GeneratorConfig>): Record<string, unknown> {
   return {
-    author: config.projectAuthor || '',
-    description: config.projectDesription || '',
+    ...(config.projectAuthor ? { author: config.projectAuthor } : {}),
+    ...(config.projectDescription ? { description: config.projectDescription } : {}),
+    ...(config.projectHomepage ? { homepage: config.projectHomepage } : {}),
+    ...(config.projectKeywords ? { keywords: config.projectKeywords } : {}),
     license: config.projectLicense || 'MIT',
     name: config.projectName || 'my-project',
     private: true,
+    ...(config.projectRepository ? { repository: config.projectRepository } : {}),
     type: 'module',
     version: config.projectVersion || '0.1.0',
   };

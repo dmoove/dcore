@@ -36,4 +36,45 @@ describe('PackageJsonGenerator', () => {
     expect(raw.peerDependencies.baz).to.equal('^3.0.0');
     expect(raw.optionalDependencies.qux).to.equal('^4.0.0');
   });
+
+  it('includes homepage, repository and keywords from config', async () => {
+    const dir = await fs.mkdtemp(join(tmpdir(), 'dcore-pkg-'));
+    const pkg = new PackageJsonGenerator(dir);
+
+    const config: GeneratorConfig = {
+      projectHomepage: 'https://example.com',
+      projectKeywords: ['foo', 'bar'],
+      projectName: 'demo',
+      projectRepository: 'user/demo',
+      projectType: 'ts-lib',
+      tools: {},
+    };
+
+    await pkg.generate(config);
+
+    const raw = JSON.parse(await fs.readFile(join(dir, 'package.json'), 'utf8'));
+    expect(raw.homepage).to.equal('https://example.com');
+    expect(raw.repository).to.equal('user/demo');
+    expect(raw.keywords).to.deep.equal(['foo', 'bar']);
+  });
+
+  it('omits optional fields when not provided', async () => {
+    const dir = await fs.mkdtemp(join(tmpdir(), 'dcore-pkg-'));
+    const pkg = new PackageJsonGenerator(dir);
+
+    const config: GeneratorConfig = {
+      projectName: 'demo',
+      projectType: 'ts-lib',
+      tools: {},
+    };
+
+    await pkg.generate(config);
+
+    const raw = JSON.parse(await fs.readFile(join(dir, 'package.json'), 'utf8'));
+    expect(raw).to.not.have.property('author');
+    expect(raw).to.not.have.property('description');
+    expect(raw).to.not.have.property('homepage');
+    expect(raw).to.not.have.property('keywords');
+    expect(raw).to.not.have.property('repository');
+  });
 });

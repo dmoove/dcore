@@ -19,9 +19,12 @@ export const dcoreConfigSchema = z.object({
     })
     .optional(),
   projectAuthor: z.string().optional(),
-  projectDesription: z.string().optional(),
+  projectDescription: z.string().optional(),
+  projectHomepage: z.string().optional(),
+  projectKeywords: z.array(z.string()).optional(),
   projectLicense: z.string().optional(),
   projectName: z.string(),
+  projectRepository: z.string().optional(),
   projectType: z.enum(['cdk-app', 'cdk-lib', 'ts-lib']),
   projectVersion: z.string().optional(),
   release: z.enum(['changesets', 'semantic-release']).optional(),

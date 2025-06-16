@@ -414,3 +414,8 @@ DESCRIPTION
 
 _See code: [@oclif/plugin-plugins](https://github.com/oclif/plugin-plugins/blob/v5.4.40/src/commands/plugins/update.ts)_
 <!-- commandsstop -->
+
+## Release
+
+The GitHub Actions workflow publishes to npm when a GitHub release is created. Set the
+`NPM_TOKEN` secret in your repository so the workflow can authenticate with the registry.
