@@ -8,7 +8,7 @@ import { PrettierGenerator } from '../../src/generators/prettier/prettier-genera
 
 describe('PrettierGenerator', () => {
   it('creates files and registers dependency', async () => {
-    const dir = await fs.mkdtemp(join(tmpdir(), 'dcore-prettier-'));
+    const dir = await fs.mkdtemp(join(tmpdir(), 'dmpak-prettier-'));
     const pkg = new PackageJsonGenerator(dir);
     const gen = new PrettierGenerator(dir, pkg);
 

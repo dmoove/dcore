@@ -8,7 +8,7 @@ import { PackageJsonGenerator } from '../../src/generators/package-json/package-
 
 describe('EslintGenerator', () => {
   it('generates config and registers dependency', async () => {
-    const dir = await fs.mkdtemp(join(tmpdir(), 'dcore-eslint-'));
+    const dir = await fs.mkdtemp(join(tmpdir(), 'dmpak-eslint-'));
     const pkg = new PackageJsonGenerator(dir);
     const gen = new EslintGenerator(dir, pkg);
 

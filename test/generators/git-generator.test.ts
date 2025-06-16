@@ -7,7 +7,7 @@ import { GitGenerator } from '../../src/generators/git/git-generator.js';
 
 describe('GitGenerator', () => {
   it('creates .gitignore and initializes repo during init', async () => {
-    const dir = await fs.mkdtemp(join(tmpdir(), 'dcore-git-'));
+    const dir = await fs.mkdtemp(join(tmpdir(), 'dmpak-git-'));
     const gen = new GitGenerator(dir);
 
     await gen.generate({ isInit: true, projectName: 'demo', projectType: 'ts-lib', tools: {} });
@@ -20,7 +20,7 @@ describe('GitGenerator', () => {
   });
 
   it('skips git init when not running init', async () => {
-    const dir = await fs.mkdtemp(join(tmpdir(), 'dcore-git-'));
+    const dir = await fs.mkdtemp(join(tmpdir(), 'dmpak-git-'));
     const gen = new GitGenerator(dir);
 
     await gen.generate({ isInit: false, projectName: 'demo', projectType: 'ts-lib', tools: {} });

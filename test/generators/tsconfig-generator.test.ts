@@ -8,7 +8,7 @@ import { TsConfigGenerator } from '../../src/generators/tsconfig/tsconfig-genera
 
 describe('TsConfigGenerator', () => {
   it('creates tsconfig and registers dependency', async () => {
-    const dir = await fs.mkdtemp(join(tmpdir(), 'dcore-tsconfig-'));
+    const dir = await fs.mkdtemp(join(tmpdir(), 'dmpak-tsconfig-'));
     const pkg = new PackageJsonGenerator(dir);
     const gen = new TsConfigGenerator(dir, pkg);
 

@@ -3,7 +3,7 @@ import { readFile, writeFile } from 'node:fs/promises';
 import { resolve } from 'node:path';
 import { z } from 'zod';
 
-import type { DcoreConfig } from '../config/load-config.js';
+import type { DmpakConfig } from '../config/load-config.js';
 
 export const DEFAULT_IGNORE_ENTRIES = [
   'node_modules',
@@ -15,14 +15,14 @@ export const DEFAULT_IGNORE_ENTRIES = [
 /**
  * Configuration passed to each generator.
  */
-export interface GeneratorConfig extends DcoreConfig {
+export interface GeneratorConfig extends DmpakConfig {
   exports?: {
     exports?: Record<string, unknown>;
     files?: string[];
     main?: string;
     types?: string;
   };
-  /** Indicates that generation is triggered during `dcore init` */
+  /** Indicates that generation is triggered during `dmpak init` */
   isInit?: boolean;
   projectHomepage?: string;
   projectKeywords?: string[];

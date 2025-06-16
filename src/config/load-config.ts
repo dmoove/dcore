@@ -6,9 +6,9 @@ import { z } from 'zod';
 import { buildToolSchema } from '../generators/tool-registry.js';
 
 /**
- * Zod schema describing the structure of `.dcorerc` configuration files.
+ * Zod schema describing the structure of `.dmpakrc` configuration files.
  */
-export const dcoreConfigSchema = z.object({
+export const dmpakConfigSchema = z.object({
   ci: z.enum(['github', 'gitlab']).optional(),
   dependencies: z
     .object({
@@ -19,35 +19,38 @@ export const dcoreConfigSchema = z.object({
     })
     .optional(),
   projectAuthor: z.string().optional(),
-  projectDesription: z.string().optional(),
+  projectDescription: z.string().optional(),
+  projectHomepage: z.string().optional(),
+  projectKeywords: z.array(z.string()).optional(),
   projectLicense: z.string().optional(),
   projectName: z.string(),
+  projectRepository: z.string().optional(),
   projectType: z.enum(['cdk-app', 'cdk-lib', 'ts-lib']),
   projectVersion: z.string().optional(),
   release: z.enum(['changesets', 'semantic-release']).optional(),
   tools: buildToolSchema(),
 });
 
-export type DcoreConfig = z.infer<typeof dcoreConfigSchema>;
+export type DmpakConfig = z.infer<typeof dmpakConfigSchema>;
 
 const CONFIG_FILES = [
-  '.dcorerc.ts',
-  '.dcorerc.js',
-  '.dcorerc.cjs',
-  '.dcorerc.json',
-  '.dcorets.ts',
-  '.dcorets.cjs',
+  '.dmpakrc.ts',
+  '.dmpakrc.js',
+  '.dmpakrc.cjs',
+  '.dmpakrc.json',
+  '.dmpakts.ts',
+  '.dmpakts.cjs',
 ];
 
 /**
- * Load the dcore configuration from the current working directory.
+ * Load the dmpak configuration from the current working directory.
  *
  * @param cwd - Directory to search for configuration files
  * @returns The parsed configuration
  */
-export async function loadDcoreConfig(
+export async function loadDmpakConfig(
   cwd = process.cwd()
-): Promise<DcoreConfig> {
+): Promise<DmpakConfig> {
   for (const filename of CONFIG_FILES) {
     const path = resolve(cwd, filename);
     if (!existsSync(path)) continue;
@@ -63,7 +66,7 @@ export async function loadDcoreConfig(
       throw new Error(`Failed to load ${filename}: ${error}`);
     }
 
-    const parseResult = dcoreConfigSchema.safeParse(rawConfig);
+    const parseResult = dmpakConfigSchema.safeParse(rawConfig);
     if (!parseResult.success) {
       throw new Error(
         `Invalid config in ${filename}:\n${JSON.stringify(
@@ -77,5 +80,5 @@ export async function loadDcoreConfig(
     return parseResult.data;
   }
 
-  throw new Error(`No dcore config found in ${cwd}`);
+  throw new Error(`No dmpak config found in ${cwd}`);
 }

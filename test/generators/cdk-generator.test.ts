@@ -10,7 +10,7 @@ import { PackageJsonGenerator } from '../../src/generators/package-json/package-
 
 describe('CdkGenerator', () => {
   it('creates app files and dependencies for cdk-app', async () => {
-    const dir = await fs.mkdtemp(join(tmpdir(), 'dcore-cdkapp-'));
+    const dir = await fs.mkdtemp(join(tmpdir(), 'dmpak-cdkapp-'));
     const pkg = new PackageJsonGenerator(dir);
     const gen = new CdkAppGenerator(dir, pkg);
 
@@ -27,7 +27,7 @@ describe('CdkGenerator', () => {
   });
 
   it('creates library files and peer dependencies for cdk-lib', async () => {
-    const dir = await fs.mkdtemp(join(tmpdir(), 'dcore-cdklib-'));
+    const dir = await fs.mkdtemp(join(tmpdir(), 'dmpak-cdklib-'));
     const pkg = new PackageJsonGenerator(dir);
     const gen = new CdkLibGenerator(dir, pkg);
 
