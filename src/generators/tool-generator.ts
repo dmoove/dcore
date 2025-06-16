@@ -22,6 +22,8 @@ export interface GeneratorConfig extends DcoreConfig {
     main?: string;
     types?: string;
   };
+  /** Indicates that generation is triggered during `dcore init` */
+  isInit?: boolean;
   projectHomepage?: string;
   projectKeywords?: string[];
   projectRepository?: string;
