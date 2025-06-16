@@ -37,9 +37,12 @@ jobs:
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
       - name: Setup git
         if: ${{ steps.version-check.outputs.skipped == 'false' }}
+        env:
+          GH_EMAIL: ${{ secrets.GH_EMAIL }}
+          GH_USERNAME: ${{ secrets.GH_USERNAME }}
         run: |
-          git config --global user.email ${{ secrets.GH_EMAIL }}
-          git config --global user.name ${{ secrets.GH_USERNAME }}
+          git config --global user.email "${GH_EMAIL:-${GITHUB_ACTOR}@users.noreply.github.com}"
+          git config --global user.name "${GH_USERNAME:-${GITHUB_ACTOR}}"
       - name: Generate oclif README
         if: ${{ steps.version-check.outputs.skipped == 'false' }}
         id: oclif-readme
