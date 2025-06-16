@@ -11,7 +11,11 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
-      - run: corepack enable
+        with:
+          node-version: lts/*
+      - uses: pnpm/action-setup@v2
+        with:
+          run_install: false
       - name: Check if version already exists
         id: version-check
         run: |

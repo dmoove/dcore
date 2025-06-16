@@ -17,8 +17,9 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node_version }}
-          cache: pnpm
-      - run: corepack enable
+      - uses: pnpm/action-setup@v2
+        with:
+          run_install: false
       - run: pnpm install
       - run: pnpm run build
       - run: pnpm run test
