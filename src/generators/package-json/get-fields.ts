@@ -54,7 +54,7 @@ export function getExportFields(config: Partial<GeneratorConfig>): Record<string
 
   if (anyDefined && !allDefined) {
     throw new Error(
-      'Invalid "exports" config in .dcorerc: If any of main/types/exports/files are set, all must be set.'
+      'Invalid "exports" config in .dmpakrc: If any of main/types/exports/files are set, all must be set.'
     );
   }
 

@@ -8,7 +8,7 @@ import { GeneratorConfig } from '../../src/generators/tool-generator.js';
 
 describe('PackageJsonGenerator', () => {
   it('writes package.json with merged dependencies', async () => {
-    const dir = await fs.mkdtemp(join(tmpdir(), 'dcore-pkg-'));
+    const dir = await fs.mkdtemp(join(tmpdir(), 'dmpak-pkg-'));
     const pkg = new PackageJsonGenerator(dir);
     pkg.addDependency('foo', '^1.0.0');
     pkg.addDevDependency('bar', '^2.0.0');
@@ -38,7 +38,7 @@ describe('PackageJsonGenerator', () => {
   });
 
   it('includes homepage, repository and keywords from config', async () => {
-    const dir = await fs.mkdtemp(join(tmpdir(), 'dcore-pkg-'));
+    const dir = await fs.mkdtemp(join(tmpdir(), 'dmpak-pkg-'));
     const pkg = new PackageJsonGenerator(dir);
 
     const config: GeneratorConfig = {
@@ -59,7 +59,7 @@ describe('PackageJsonGenerator', () => {
   });
 
   it('omits optional fields when not provided', async () => {
-    const dir = await fs.mkdtemp(join(tmpdir(), 'dcore-pkg-'));
+    const dir = await fs.mkdtemp(join(tmpdir(), 'dmpak-pkg-'));
     const pkg = new PackageJsonGenerator(dir);
 
     const config: GeneratorConfig = {
