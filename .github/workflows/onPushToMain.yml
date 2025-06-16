@@ -46,13 +46,15 @@ jobs:
       - name: Generate oclif README
         if: ${{ steps.version-check.outputs.skipped == 'false' }}
         id: oclif-readme
+        env:
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
         run: |
           pnpm install
           pnpm exec oclif readme
           if [ -n "$(git status --porcelain)" ]; then
             git add .
             git commit -am "chore: update README.md"
-            git push -u origin ${{ github.ref_name }}
+            git push -u "https://$GH_TOKEN@github.com/${{ github.repository }}" "${{ github.ref_name }}"
           fi
       - name: Create Github Release
         uses: ncipollo/release-action@2c591bcc8ecdcd2db72b97d6147f871fcd833ba5
