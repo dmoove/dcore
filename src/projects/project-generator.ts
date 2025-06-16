@@ -1,4 +1,5 @@
 import { EslintGenerator } from '../generators/eslint/eslint-generator.js';
+import { GitGenerator } from '../generators/git/git-generator.js';
 import { PackageJsonGenerator } from '../generators/package-json/package-json-generator.js';
 import { PrettierGenerator } from '../generators/prettier/prettier-generator.js';
 import { GeneratorConfig, ToolGenerator } from '../generators/tool-generator.js';
@@ -14,6 +15,7 @@ export class ProjectGenerator {
       new EslintGenerator(this.projectRoot, pkg),
       new TsConfigGenerator(this.projectRoot, pkg),
       new PrettierGenerator(this.projectRoot, pkg),
+      new GitGenerator(this.projectRoot),
     ];
   }
 

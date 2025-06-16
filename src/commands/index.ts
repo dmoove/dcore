@@ -11,7 +11,7 @@ export default class Dcore extends Command {
     const config = await loadDcoreConfig();
     this.log('✅ Configuration loaded.');
 
-    const generator = new ProjectGenerator(config);
+    const generator = new ProjectGenerator({ ...config, isInit: false });
     await generator.generateAll();
 
     this.log('🎉 Project updated successfully!');

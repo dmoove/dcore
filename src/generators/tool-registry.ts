@@ -1,14 +1,16 @@
 import { z } from 'zod';
 
 import { EslintGenerator } from './eslint/eslint-generator';
+import { GitGenerator } from './git/git-generator';
 import { PackageJsonGenerator } from './package-json/package-json-generator';
 import { PrettierGenerator } from './prettier/prettier-generator';
 import { TsConfigGenerator } from './tsconfig/tsconfig-generator';
 
 export const toolGenerators = [
   EslintGenerator,
-  PrettierGenerator,
+  GitGenerator,
   PackageJsonGenerator,
+  PrettierGenerator,
   TsConfigGenerator,
 ];
 

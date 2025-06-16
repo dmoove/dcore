@@ -43,7 +43,7 @@ export default class Init extends Command {
     this.log('✅ Created .dcorerc.ts');
 
     const config = await loadDcoreConfig();
-    const generator = new ProjectGenerator(config);
+    const generator = new ProjectGenerator({ ...config, isInit: true });
     await generator.generateAll();
 
     this.log('🎉 Project initialized successfully!');
