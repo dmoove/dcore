@@ -40,7 +40,7 @@ $ npm install -g dmpak
 $ dmpak COMMAND
 running command...
 $ dmpak (--version)
-dmpak/0.0.2 linux-x64 node-v20.19.2
+dmpak/0.0.3 linux-x64 node-v22.16.0
 $ dmpak --help [COMMAND]
 USAGE
   $ dmpak COMMAND
@@ -50,7 +50,6 @@ USAGE
 # Commands
 <!-- commands -->
 * [`dmpak help [COMMAND]`](#dmpak-help-command)
-* [`dmpak init`](#dmpak-init)
 * [`dmpak plugins`](#dmpak-plugins)
 * [`dmpak plugins add PLUGIN`](#dmpak-plugins-add-plugin)
 * [`dmpak plugins:inspect PLUGIN...`](#dmpak-pluginsinspect-plugin)
@@ -61,7 +60,6 @@ USAGE
 * [`dmpak plugins uninstall [PLUGIN]`](#dmpak-plugins-uninstall-plugin)
 * [`dmpak plugins unlink [PLUGIN]`](#dmpak-plugins-unlink-plugin)
 * [`dmpak plugins update`](#dmpak-plugins-update)
-* [`dmpak update`](#dmpak-update)
 
 ## `dmpak help [COMMAND]`
 
@@ -82,25 +80,6 @@ DESCRIPTION
 ```
 
 _See code: [@oclif/plugin-help](https://github.com/oclif/plugin-help/blob/v6.2.29/src/commands/help.ts)_
-
-## `dmpak init`
-
-Create a new .dmpakrc.mjs and generate project files
-
-```
-USAGE
-  $ dmpak init -t cdk-lib|cdk-app|ts-lib [-f]
-
-FLAGS
-  -f, --force          Overwrite existing configuration
-  -t, --type=<option>  (required) Project template type
-                       <options: cdk-lib|cdk-app|ts-lib>
-
-DESCRIPTION
-  Create a new .dmpakrc.mjs and generate project files
-```
-
-_See code: [src/commands/init.ts](https://github.com/dmoove/dmpak/blob/v0.0.2/src/commands/init.ts)_
 
 ## `dmpak plugins`
 
@@ -137,8 +116,7 @@ ARGUMENTS
   PLUGIN...  Plugin to install.
 
 FLAGS
-  -f, --force    Force npm to fetch remote resources even if a local copy exists
-                 on disk.
+  -f, --force    Force npm to fetch remote resources even if a local copy exists on disk.
   -h, --help     Show CLI help.
   -s, --silent   Silences npm output.
   -v, --verbose  Show verbose npm output.
@@ -212,8 +190,7 @@ ARGUMENTS
   PLUGIN...  Plugin to install.
 
 FLAGS
-  -f, --force    Force npm to fetch remote resources even if a local copy exists
-                 on disk.
+  -f, --force    Force npm to fetch remote resources even if a local copy exists on disk.
   -h, --help     Show CLI help.
   -s, --silent   Silences npm output.
   -v, --verbose  Show verbose npm output.
@@ -271,10 +248,8 @@ DESCRIPTION
 
   Installation of a linked plugin will override a user-installed or core plugin.
 
-  e.g. If you have a user-installed or core plugin that has a 'hello' command,
-  installing a linked plugin with a 'hello' command will override the
-  user-installed or core plugin implementation. This is useful for development
-  work.
+  e.g. If you have a user-installed or core plugin that has a 'hello' command, installing a linked plugin with a 'hello'
+  command will override the user-installed or core plugin implementation. This is useful for development work.
 
 
 EXAMPLES
@@ -318,8 +293,7 @@ USAGE
   $ dmpak plugins reset [--hard] [--reinstall]
 
 FLAGS
-  --hard       Delete node_modules and package manager related files in addition
-               to uninstalling plugins.
+  --hard       Delete node_modules and package manager related files in addition to uninstalling plugins.
   --reinstall  Reinstall all plugins after uninstalling.
 ```
 
@@ -396,20 +370,6 @@ DESCRIPTION
 ```
 
 _See code: [@oclif/plugin-plugins](https://github.com/oclif/plugin-plugins/blob/v5.4.40/src/commands/plugins/update.ts)_
-
-## `dmpak update`
-
-Regenerate project files based on .dmpakrc config
-
-```
-USAGE
-  $ dmpak update
-
-DESCRIPTION
-  Regenerate project files based on .dmpakrc config
-```
-
-_See code: [src/commands/update.ts](https://github.com/dmoove/dmpak/blob/v0.0.2/src/commands/update.ts)_
 <!-- commandsstop -->
 
 ## Release
