@@ -77,4 +77,22 @@ describe('PackageJsonGenerator', () => {
     expect(raw).to.not.have.property('keywords');
     expect(raw).to.not.have.property('repository');
   });
+
+  it('merges scripts from config and generators', async () => {
+    const dir = await fs.mkdtemp(join(tmpdir(), 'dmpak-pkg-'));
+    const pkg = new PackageJsonGenerator(dir);
+    pkg.addScript('build', 'tsc');
+
+    const config: GeneratorConfig = {
+      projectName: 'demo',
+      projectType: 'ts-lib',
+      scripts: { test: 'jest' },
+      tools: {},
+    };
+
+    await pkg.generate(config);
+
+    const raw = JSON.parse(await fs.readFile(join(dir, 'package.json'), 'utf8'));
+    expect(raw.scripts).to.deep.equal({ build: 'tsc', test: 'jest' });
+  });
 });

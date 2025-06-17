@@ -32,23 +32,27 @@ export default class Init extends Command {
    */
   async run(): Promise<void> {
     const { flags } = await this.parse(Init);
-    const file = resolve(process.cwd(), '.dmpakrc.mjs');
+    const file = resolve(process.cwd(), '.dmpakrc.ts');
 
     if (existsSync(file) && !flags.force) {
-      this.error('.dmpakrc.mjs already exists. Use --force to overwrite.');
+      this.error('.dmpakrc.ts already exists. Use --force to overwrite.');
       return;
     }
 
     const name = basename(process.cwd());
-    const content = `export default {
+    const content = `import type { DmpakConfig } from 'dmpak';
+
+const config: DmpakConfig = {
   projectName: '${name}',
   projectType: '${flags.type}',
   tools: { eslint: true, prettier: true },
 };
+
+export default config;
 `;
 
     await writeFile(file, content, 'utf8');
-    this.log('✅ Created .dmpakrc.mjs');
+    this.log('✅ Created .dmpakrc.ts');
 
     const config = await loadDmpakConfig();
     const generator = new ProjectGenerator({ ...config, isInit: true });

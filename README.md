@@ -17,11 +17,13 @@ A lightweight ESM-based CLI framework for bootstrapping and managing TypeScript 
 # Configuration
 
 dmpak reads configuration from `.dmpakrc.*` or `.dmpakts.ts` in the project
-root. Besides enabling tools you can declare additional dependencies which will
-be merged into the generated `package.json`:
+root. Using a TypeScript config file (`.dmpakrc.ts` or `.dmpakts.ts`) enables
+editor autocompletion when you import the `DmpakConfig` type:
 
 ```ts
-export default {
+import type { DmpakConfig } from 'dmpak';
+
+const config: DmpakConfig = {
   projectName: 'my-app',
   packageManager: 'pnpm',
   tools: { eslint: true, prettier: true },
@@ -32,7 +34,12 @@ export default {
     },
   },
 };
+
+export default config;
 ```
+
+Besides enabling tools you can declare additional dependencies which will be
+merged into the generated `package.json`:
 
 dmpak runs the configured package manager after `init` and `update` to install dependencies. If
 `packageManager` is omitted, `pnpm` is used by default.
