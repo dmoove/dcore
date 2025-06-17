@@ -31,11 +31,11 @@ jobs:
 
       - name: Check version consistency
         run: |
-          version_input="${{ github.event.inputs.version }}"
+          version_input="${{ github.event.client_payload.version }}"
           version_pkg=$(node -p "require('./package.json').version")
           echo "Version input: $version_input"
           echo "package.json version: $version_pkg"
-
+      
           if [ "$version_input" != "$version_pkg" ]; then
             echo "❌ Version mismatch"
             exit 1
