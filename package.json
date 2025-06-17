@@ -1,7 +1,7 @@
 {
   "name": "dmpak",
   "description": "A lightweight ESM-based CLI framework for bootstrapping and managing TypeScript project configurations with CI/CD support.",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "author": "Yannick Tresch @yanu23",
   "bin": {
     "dmpak": "./bin/run.js"

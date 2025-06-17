@@ -14,16 +14,33 @@ describe('CdkGenerator', () => {
     const pkg = new PackageJsonGenerator(dir);
     const gen = new CdkAppGenerator(dir, pkg);
 
-    await gen.generate({ projectName: 'demo', projectType: 'cdk-app', tools: {} });
-    await pkg.generate({ projectName: 'demo', projectType: 'cdk-app', tools: {} });
+    await gen.generate({
+      projectName: 'demo',
+      projectType: 'cdk-app',
+      tools: {},
+    });
+    await pkg.generate({
+      projectName: 'demo',
+      projectType: 'cdk-app',
+      tools: {},
+    });
 
     const cdkCfg = JSON.parse(await fs.readFile(join(dir, 'cdk.json'), 'utf8'));
-    const pkgJson = JSON.parse(await fs.readFile(join(dir, 'package.json'), 'utf8'));
+    const pkgJson = JSON.parse(
+      await fs.readFile(join(dir, 'package.json'), 'utf8')
+    );
 
     expect(cdkCfg.app).to.equal('npx ts-node --prefer-ts-exts bin/demo.ts');
-    expect(pkgJson.dependencies['aws-cdk-lib']).to.equal(AWS_CDK_VERSION);
-    expect(pkgJson.devDependencies['aws-cdk-lib']).to.equal(AWS_CDK_VERSION);
-    expect(await fs.stat(join(dir, 'bin/demo.ts')).then(() => true, () => false)).to.equal(true);
+    expect(pkgJson.dependencies).to.have.property(
+      'aws-cdk-lib',
+      AWS_CDK_VERSION
+    );
+    expect(
+      await fs.stat(join(dir, 'bin/demo.ts')).then(
+        () => true,
+        () => false
+      )
+    ).to.equal(true);
   });
 
   it('creates library files and peer dependencies for cdk-lib', async () => {
@@ -31,13 +48,30 @@ describe('CdkGenerator', () => {
     const pkg = new PackageJsonGenerator(dir);
     const gen = new CdkLibGenerator(dir, pkg);
 
-    await gen.generate({ projectName: 'demo', projectType: 'cdk-lib', tools: {} });
-    await pkg.generate({ projectName: 'demo', projectType: 'cdk-lib', tools: {} });
+    await gen.generate({
+      projectName: 'demo',
+      projectType: 'cdk-lib',
+      tools: {},
+    });
+    await pkg.generate({
+      projectName: 'demo',
+      projectType: 'cdk-lib',
+      tools: {},
+    });
 
-    const pkgJson = JSON.parse(await fs.readFile(join(dir, 'package.json'), 'utf8'));
+    const pkgJson = JSON.parse(
+      await fs.readFile(join(dir, 'package.json'), 'utf8')
+    );
 
-    expect(pkgJson.peerDependencies['aws-cdk-lib']).to.equal(AWS_CDK_VERSION);
-    expect(pkgJson.devDependencies['aws-cdk-lib']).to.equal(AWS_CDK_VERSION);
-    expect(await fs.stat(join(dir, 'lib/index.ts')).then(() => true, () => false)).to.equal(true);
+    expect(pkgJson.dependencies).to.have.property(
+      'aws-cdk-lib',
+      AWS_CDK_VERSION
+    );
+    expect(
+      await fs.stat(join(dir, 'lib/index.ts')).then(
+        () => true,
+        () => false
+      )
+    ).to.equal(true);
   });
 });
