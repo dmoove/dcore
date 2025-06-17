@@ -37,4 +37,16 @@ describe('loadDmpakConfig', () => {
     const cfg = await loadDmpakConfig(dir);
     expect(cfg.projectName).to.equal('mjs');
   });
+
+  it('loads configuration from .dmpakrc.ts', async () => {
+    const dir = await fs.mkdtemp(join(tmpdir(), 'dmpak-'));
+    await fs.writeFile(
+      join(dir, '.dmpakrc.ts'),
+      "export default { projectType: 'ts-lib', projectName: 'ts', tools: {} };\n",
+      'utf8'
+    );
+
+    const cfg = await loadDmpakConfig(dir);
+    expect(cfg.projectName).to.equal('ts');
+  });
 });

@@ -53,6 +53,7 @@ const CONFIG_FILES = [
 export async function loadDmpakConfig(
   cwd = process.cwd()
 ): Promise<DmpakConfig> {
+  let tsxRegistered = false;
   for (const filename of CONFIG_FILES) {
     const path = resolve(cwd, filename);
     if (!existsSync(path)) continue;
@@ -61,9 +62,25 @@ export async function loadDmpakConfig(
     let rawConfig: unknown;
 
     try {
-      // eslint-disable-next-line no-await-in-loop
-      const imported = await import(fileUrl);
-      rawConfig = imported.default ?? imported;
+       
+      if (filename.endsWith('.ts')) {
+        if (!tsxRegistered) {
+          // eslint-disable-next-line no-await-in-loop
+          const { register } = await import('tsx/esm/api');
+          register();
+          tsxRegistered = true;
+        }
+
+        // eslint-disable-next-line no-await-in-loop
+        const { tsImport } = await import('tsx/esm/api');
+        // eslint-disable-next-line no-await-in-loop
+        const imported = await tsImport(path, import.meta.url);
+        rawConfig = imported.default?.default ?? imported.default ?? imported;
+      } else {
+        // eslint-disable-next-line no-await-in-loop
+        const imported = await import(fileUrl);
+        rawConfig = imported.default ?? imported;
+      }
     } catch (error) {
       throw new Error(`Failed to load ${filename}: ${error}`);
     }
