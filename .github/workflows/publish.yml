@@ -2,11 +2,8 @@
 name: publish
 
 on:
-  workflow_dispatch:
-    inputs:
-      version:
-        description: 'Version to publish (must match package.json)'
-        required: true
+  repository_dispatch:
+    types: [publish]
 
 jobs:
   publish:
