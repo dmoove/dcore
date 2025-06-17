@@ -8,7 +8,10 @@ import { spawn } from 'node:child_process';
 export async function runInstall(packageManager: string): Promise<void> {
   try {
     await new Promise<void>((resolve, reject) => {
-      const proc = spawn(packageManager, ['install'], { stdio: 'inherit' });
+      const proc = spawn(packageManager, ['install'], {
+        shell: true,
+        stdio: 'inherit',
+      });
       proc.on('close', (code) => {
         if (code === 0) resolve();
         else reject(new Error(`${packageManager} install failed with exit code ${code}`));
