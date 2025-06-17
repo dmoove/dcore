@@ -27,6 +27,7 @@ export interface GeneratorConfig extends DmpakConfig {
   projectHomepage?: string;
   projectKeywords?: string[];
   projectRepository?: string;
+  scripts?: Record<string, string>;
 }
 
 /**

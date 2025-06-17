@@ -1,5 +1,5 @@
 import { GeneratorConfig, ToolGenerator } from '../tool-generator.js';
-import { getBaseFields, getExportFields, getScripts } from './get-fields.js';
+import { getBaseFields, getExportFields } from './get-fields.js';
 
 /**
  * Writes the project's `package.json` file and collects dependencies from
@@ -11,6 +11,7 @@ export class PackageJsonGenerator extends ToolGenerator {
   private devDependencies = new Map<string, string>();
   private optionalDependencies = new Map<string, string>();
   private peerDependencies = new Map<string, string>();
+  private scripts: Record<string, string> = {};
 
   /** Register a runtime dependency for the generated `package.json`. */
   addDependency(pkg: string, version: string): void {
@@ -32,12 +33,21 @@ export class PackageJsonGenerator extends ToolGenerator {
     this.peerDependencies.set(pkg, version);
   }
 
+  /** Register a script for the generated `package.json`. */
+  addScript(name: string, command: string): void {
+    if (this.scripts[name]) {
+      throw new Error(`Script "${name}" already exists in package.json`);
+    }
+
+    this.scripts[name] = command;
+  }
+
   /**
    * Generate the `package.json` file based on collected information.
    */
   async generate(config: GeneratorConfig): Promise<void> {
     const base = getBaseFields(config);
-    const scripts = getScripts(config);
+    const scripts = (config.scripts ?? {}) as Record<string, string>;
     const exports = getExportFields(config);
     const extraDeps = (config.dependencies ?? {}) as Record<
       string,
