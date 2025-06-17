@@ -2,11 +2,11 @@ import { z } from 'zod';
 
 import { CdkAppGenerator } from './cdk/cdk-app-generator.js';
 import { CdkLibGenerator } from './cdk/cdk-lib-generator.js';
-import { EslintGenerator } from './eslint/eslint-generator';
-import { GitGenerator } from './git/git-generator';
-import { PackageJsonGenerator } from './package-json/package-json-generator';
-import { PrettierGenerator } from './prettier/prettier-generator';
-import { TsConfigGenerator } from './tsconfig/tsconfig-generator';
+import { EslintGenerator } from './eslint/eslint-generator.js';
+import { GitGenerator } from './git/git-generator.js';
+import { PackageJsonGenerator } from './package-json/package-json-generator.js';
+import { PrettierGenerator } from './prettier/prettier-generator.js';
+import { TsConfigGenerator } from './tsconfig/tsconfig-generator.js';
 
 /**
  * List of all available tool generators.

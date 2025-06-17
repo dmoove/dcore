@@ -50,6 +50,7 @@
     "bin": "dmpak",
     "dirname": "dmpak",
     "commands": "./dist/commands",
+    "default": "update",
     "plugins": [
       "@oclif/plugin-help",
       "@oclif/plugin-plugins"
