@@ -18,6 +18,7 @@ export const dmpakConfigSchema = z.object({
       peerDependencies: z.record(z.string(), z.string()).optional(),
     })
     .optional(),
+  packageManager: z.enum(['pnpm', 'npm', 'yarn']).optional(),
   projectAuthor: z.string().optional(),
   projectDescription: z.string().optional(),
   projectHomepage: z.string().optional(),
@@ -78,7 +79,9 @@ export async function loadDmpakConfig(
       );
     }
 
-    return parseResult.data;
+    const cfg = parseResult.data;
+    if (!cfg.packageManager) cfg.packageManager = 'pnpm';
+    return cfg;
   }
 
   throw new Error(`No dmpak config found in ${cwd}`);

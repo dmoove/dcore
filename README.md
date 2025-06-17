@@ -23,6 +23,7 @@ be merged into the generated `package.json`:
 ```ts
 export default {
   projectName: 'my-app',
+  packageManager: 'pnpm',
   tools: { eslint: true, prettier: true },
   dependencies: {
     devDependencies: {
@@ -32,6 +33,9 @@ export default {
   },
 };
 ```
+
+dmpak runs the configured package manager after `init` and `update` to install dependencies. If
+`packageManager` is omitted, `pnpm` is used by default.
 
 # Usage
 <!-- usage -->
