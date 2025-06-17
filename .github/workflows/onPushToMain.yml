@@ -72,5 +72,4 @@ jobs:
           repository: ${{ github.repository }}
           workflow: publish
           ref: main
-          inputs:
-            version: ${{ steps.version-check.outputs.tag }}
+          inputs: '{"version": "${{ steps.version-check.outputs.tag }}"}'
