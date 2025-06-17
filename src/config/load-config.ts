@@ -34,8 +34,9 @@ export const dmpakConfigSchema = z.object({
 export type DmpakConfig = z.infer<typeof dmpakConfigSchema>;
 
 const CONFIG_FILES = [
-  '.dmpakrc.ts',
+  '.dmpakrc.mjs',
   '.dmpakrc.js',
+  '.dmpakrc.ts',
   '.dmpakrc.cjs',
   '.dmpakrc.json',
   '.dmpakts.ts',

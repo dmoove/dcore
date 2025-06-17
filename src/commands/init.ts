@@ -11,7 +11,7 @@ import { ProjectGenerator } from '../projects/project-generator.js';
  * default project files.
  */
 export default class Init extends Command {
-  static description = 'Create a new .dmpakrc.ts and generate project files';
+  static description = 'Create a new .dmpakrc.mjs and generate project files';
   static flags = {
     force: Flags.boolean({
       char: 'f',
@@ -31,10 +31,10 @@ export default class Init extends Command {
    */
   async run(): Promise<void> {
     const { flags } = await this.parse(Init);
-    const file = resolve(process.cwd(), '.dmpakrc.ts');
+    const file = resolve(process.cwd(), '.dmpakrc.mjs');
 
     if (existsSync(file) && !flags.force) {
-      this.error('.dmpakrc.ts already exists. Use --force to overwrite.');
+      this.error('.dmpakrc.mjs already exists. Use --force to overwrite.');
       return;
     }
 
@@ -47,7 +47,7 @@ export default class Init extends Command {
 `;
 
     await writeFile(file, content, 'utf8');
-    this.log('✅ Created .dmpakrc.ts');
+    this.log('✅ Created .dmpakrc.mjs');
 
     const config = await loadDmpakConfig();
     const generator = new ProjectGenerator({ ...config, isInit: true });

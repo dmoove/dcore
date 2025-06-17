@@ -18,4 +18,23 @@ describe('loadDmpakConfig', () => {
     expect(cfg.projectName).to.equal('demo');
     expect(cfg.dependencies?.devDependencies?.jest).to.equal('^1.0.0');
   });
+
+  it('loads configuration from .dmpakrc.mjs before others', async () => {
+    const dir = await fs.mkdtemp(join(tmpdir(), 'dmpak-'));
+
+    await fs.writeFile(
+      join(dir, '.dmpakrc.js'),
+      "export default { projectType: 'ts-lib', projectName: 'js', tools: {} };\n",
+      'utf8'
+    );
+
+    await fs.writeFile(
+      join(dir, '.dmpakrc.mjs'),
+      "export default { projectType: 'ts-lib', projectName: 'mjs', tools: {} };\n",
+      'utf8'
+    );
+
+    const cfg = await loadDmpakConfig(dir);
+    expect(cfg.projectName).to.equal('mjs');
+  });
 });
