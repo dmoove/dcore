@@ -1,0 +1,59 @@
+# .github/workflows/publish.yml
+name: publish
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version to publish (must match package.json)'
+        required: true
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: lts/*
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 9
+          run_install: false
+
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Check version consistency
+        run: |
+          version_input="${{ github.event.inputs.version }}"
+          version_pkg=$(node -p "require('./package.json').version")
+          echo "Version input: $version_input"
+          echo "package.json version: $version_pkg"
+
+          if [ "$version_input" != "$version_pkg" ]; then
+            echo "❌ Version mismatch"
+            exit 1
+          fi
+
+      - name: Build project
+        run: pnpm run build
+
+      - name: Run prepack (optional)
+        run: pnpm run prepack || echo "⚠️ No prepack script defined"
+
+      - name: Publish to npm
+        uses: JS-DevTools/npm-publish@19c28f1ef146469e409470805ea4279d47c3d35c
+        with:
+          token: ${{ secrets.NPM_TOKEN }}
+
+      - name: Run postpack (optional)
+        run: pnpm run postpack || echo "ℹ️ No postpack script defined"
