@@ -32,6 +32,7 @@ jobs:
       - name: Check version consistency
         run: |
           version_input="${{ github.event.client_payload.version }}"
+          version_input="${version_input#v}" # 'v' entfernen
           version_pkg=$(node -p "require('./package.json').version")
           echo "Version input: $version_input"
           echo "package.json version: $version_pkg"
