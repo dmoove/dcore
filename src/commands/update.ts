@@ -2,6 +2,7 @@ import { Command } from '@oclif/core';
 
 import { loadDmpakConfig } from '../config/load-config.js';
 import { ProjectGenerator } from '../projects/project-generator.js';
+import { runInstall } from '../utils/package-manager.js';
 
 /**
  * Default command which regenerates all project files according to the
@@ -20,6 +21,8 @@ export default class Dmpak extends Command {
 
     const generator = new ProjectGenerator({ ...config, isInit: false });
     await generator.generateAll();
+
+    await runInstall(config.packageManager ?? 'pnpm');
 
     this.log('🎉 Project updated successfully!');
   }

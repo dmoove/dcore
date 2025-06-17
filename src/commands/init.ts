@@ -5,6 +5,7 @@ import { basename, resolve } from 'node:path';
 
 import { loadDmpakConfig } from '../config/load-config.js';
 import { ProjectGenerator } from '../projects/project-generator.js';
+import { runInstall } from '../utils/package-manager.js';
 
 /**
  * Initialize a new project by creating a configuration file and generating
@@ -52,6 +53,8 @@ export default class Init extends Command {
     const config = await loadDmpakConfig();
     const generator = new ProjectGenerator({ ...config, isInit: true });
     await generator.generateAll();
+
+    await runInstall(config.packageManager ?? 'pnpm');
 
     this.log('🎉 Project initialized successfully!');
   }
