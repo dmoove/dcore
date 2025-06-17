@@ -22,7 +22,7 @@ export default class Dmpak extends Command {
     const generator = new ProjectGenerator({ ...config, isInit: false });
     await generator.generateAll();
 
-    await runInstall(config.packageManager);
+    await runInstall(config.packageManager ?? 'pnpm');
 
     this.log('🎉 Project updated successfully!');
   }

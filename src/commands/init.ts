@@ -54,7 +54,7 @@ export default class Init extends Command {
     const generator = new ProjectGenerator({ ...config, isInit: true });
     await generator.generateAll();
 
-    await runInstall(config.packageManager);
+    await runInstall(config.packageManager ?? 'pnpm');
 
     this.log('🎉 Project initialized successfully!');
   }
