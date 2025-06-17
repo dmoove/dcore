@@ -51,7 +51,7 @@ $ npm install -g dmpak
 $ dmpak COMMAND
 running command...
 $ dmpak (--version)
-dmpak/0.0.4 linux-x64 node-v22.16.0
+dmpak/0.0.5 linux-x64 node-v22.16.0
 $ dmpak --help [COMMAND]
 USAGE
   $ dmpak COMMAND
