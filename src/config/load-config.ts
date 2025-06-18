@@ -64,7 +64,7 @@ export async function loadDmpakConfig(
     try {
        
       if (filename.endsWith('.ts')) {
-        if (!tsxRegistered) {
+        if (!tsxRegistered && !process.execArgv.some((a) => a.includes('ts-node/esm'))) {
           // eslint-disable-next-line no-await-in-loop
           const { register } = await import('tsx/esm/api');
           register();
@@ -73,8 +73,7 @@ export async function loadDmpakConfig(
 
         // eslint-disable-next-line no-await-in-loop
         const { tsImport } = await import('tsx/esm/api');
-        const specifier =
-          process.platform === 'win32' ? fileUrl : path;
+        const specifier = path;
         // eslint-disable-next-line no-await-in-loop
         const imported = await tsImport(specifier, import.meta.url);
         rawConfig = imported.default?.default ?? imported.default ?? imported;
