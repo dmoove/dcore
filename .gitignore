@@ -7,6 +7,9 @@
 /node_modules
 oclif.manifest.json
 
+# Ignore CLI test project created in CI
+/cli-test
+
 
 yarn.lock
 package-lock.json
