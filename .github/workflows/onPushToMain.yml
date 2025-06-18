@@ -1,12 +1,15 @@
-# test
 name: version, tag and github release
 
 on:
-  push:
+  workflow_run:
+    workflows: ["tests"]
     branches: [main]
+    types:
+      - completed
 
 jobs:
   release:
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     permissions:
       contents: write
       actions: write
@@ -26,8 +29,7 @@ jobs:
           package_version=$(node -p "require('./package.json').version")
           exists=$(gh api repos/${{ github.repository }}/releases/tags/v$package_version >/dev/null 2>&1 && echo "true" || echo "")
 
-          if [ -n "$exists" ];
-          then
+          if [ -n "$exists" ]; then
             echo "Version v$package_version already exists"
             echo "::warning file=package.json,line=1::Version v$package_version already exists - no release will be created. If you want to create a new release, please update the version in package.json and push again."
             echo "skipped=true" >> $GITHUB_OUTPUT
@@ -36,7 +38,6 @@ jobs:
             echo "skipped=false" >> $GITHUB_OUTPUT
             echo "tag=v$package_version" >> $GITHUB_OUTPUT
           fi
-        # gh will automatically use the GITHUB_TOKEN provided by the workflow
       - name: Setup git
         if: ${{ steps.version-check.outputs.skipped == 'false' }}
         env:

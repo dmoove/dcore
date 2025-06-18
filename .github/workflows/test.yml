@@ -23,4 +23,8 @@ jobs:
           run_install: false
       - run: pnpm install
       - run: pnpm run build
+      - name: Test dmpak init command
+        run: |
+          mkdir cli-test && cd cli-test
+          node ../bin/run.js init --type cdk-app
       - run: pnpm run test
