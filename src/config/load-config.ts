@@ -54,6 +54,12 @@ export async function loadDmpakConfig(
   cwd = process.cwd()
 ): Promise<DmpakConfig> {
   let tsxRegistered = false;
+  const usingTsNode = process.execArgv.some((a) => a.includes('ts-node/esm'));
+  const usingTsNodeRegister = Boolean(
+    (process as unknown as Record<PropertyKey, unknown>)[
+      Symbol.for('ts-node.register.instance')
+    ]
+  );
   for (const filename of CONFIG_FILES) {
     const path = resolve(cwd, filename);
     if (!existsSync(path)) continue;
@@ -63,27 +69,42 @@ export async function loadDmpakConfig(
 
     try {
       if (filename.endsWith('.ts')) {
-        if (
-          !tsxRegistered &&
-          !process.execArgv.some((a) => a.includes('ts-node/esm'))
-        ) {
-          // eslint-disable-next-line no-await-in-loop
-          const { register } = await import('tsx/esm/api');
-          register();
-          tsxRegistered = true;
-        }
+        if (usingTsNode) {
+          // ts-node is already handling TypeScript files
+          if (usingTsNodeRegister) {
+            // eslint-disable-next-line no-await-in-loop
+            const { tsImport } = await import('tsx/esm/api');
+            // eslint-disable-next-line no-await-in-loop
+            const imported = await tsImport(path, {
+              parentURL: import.meta.url,
+            });
+            rawConfig =
+              imported.default?.default ?? imported.default ?? imported;
+          } else {
+            // eslint-disable-next-line no-await-in-loop
+            const imported = await import(fileUrl);
+            rawConfig =
+              imported.default?.default ?? imported.default ?? imported;
+          }
+        } else {
+          if (!tsxRegistered) {
+            // eslint-disable-next-line no-await-in-loop
+            const { register } = await import('tsx/esm/api');
+            register();
+            tsxRegistered = true;
+          }
 
-        // eslint-disable-next-line no-await-in-loop
-        const { tsImport } = await import('tsx/esm/api');
-        // On Windows, tsImport requires a file URL while POSIX platforms work
-        // with file paths. Using a URL on Windows prevents "Only URLs with a
-        // scheme" errors during tests.
-        const specifier = process.platform === 'win32' ? fileUrl : path;
-        // eslint-disable-next-line no-await-in-loop
-        const imported = await tsImport(specifier, {
-          parentURL: import.meta.url,
-        });
-        rawConfig = imported.default?.default ?? imported.default ?? imported;
+          // eslint-disable-next-line no-await-in-loop
+          const { tsImport } = await import('tsx/esm/api');
+          // On Windows, tsImport requires a file URL while POSIX platforms work
+          // with file paths.
+          const specifier = process.platform === 'win32' ? fileUrl : path;
+          // eslint-disable-next-line no-await-in-loop
+          const imported = await tsImport(specifier, {
+            parentURL: import.meta.url,
+          });
+          rawConfig = imported.default?.default ?? imported.default ?? imported;
+        }
       } else {
         // eslint-disable-next-line no-await-in-loop
         const imported = await import(fileUrl);
