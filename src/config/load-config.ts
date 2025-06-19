@@ -73,9 +73,11 @@ export async function loadDmpakConfig(
 
         // eslint-disable-next-line no-await-in-loop
         const { tsImport } = await import('tsx/esm/api');
-        // tsImport expects a file path. Using the path works across
-        // platforms and avoids duplicate extensions in Windows tests.
-        const specifier = path;
+        // On Windows, tsImport requires a file URL while POSIX platforms work
+        // with file paths. Using a URL on Windows prevents "Only URLs with a
+        // scheme" errors during tests.
+        const specifier =
+          process.platform === 'win32' ? pathToFileURL(path).href : path;
         // eslint-disable-next-line no-await-in-loop
         const imported = await tsImport(specifier, import.meta.url);
         rawConfig = imported.default?.default ?? imported.default ?? imported;
