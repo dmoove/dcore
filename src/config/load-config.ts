@@ -78,8 +78,7 @@ export async function loadDmpakConfig(
         // On Windows, tsImport requires a file URL while POSIX platforms work
         // with file paths. Using a URL on Windows prevents "Only URLs with a
         // scheme" errors during tests.
-        const specifier =
-          process.platform === 'win32' ? pathToFileURL(path).href : path;
+        const specifier = process.platform === 'win32' ? fileUrl : path;
         // eslint-disable-next-line no-await-in-loop
         const imported = await tsImport(specifier, {
           parentURL: import.meta.url,
